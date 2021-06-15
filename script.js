@@ -1,4 +1,6 @@
-const text_content = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+const text_content = `Consectetur enim laborum velit porro earum quae vitae Illum sit autem eos eos labore reprehenderit. Sed quo labore soluta eius.
+
+Foo bar baz; bak foo. Sed quo labore soluta eius.`;
 
 const log_content = d3.select('.content');
 log_content.append('h3').text('Non-overlapping Ranges');
@@ -93,7 +95,8 @@ function recalculateAndVisualize(ranges) {
     .attr('x', (d,i) => x(i) + (x(1) - x(0))/2)
     .attr('y', y('dummy') + y.bandwidth() + 10)
     .text(d => d)
-    .attr('font-size', 12)
+    .attr('font-size', 10)
+    .attr('font-family', 'monospace')
     .attr('text-anchor', 'middle');
 
 
