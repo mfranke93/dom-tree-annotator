@@ -9,3 +9,11 @@
   padding: 1em;
 }
 
+.annotated-text .annotation {
+  background: #d9b1b1;
+}
+
+.annotated-text .annotation::after {
+  content: attr(data-items);
+  font-size: xx-small;
+}
