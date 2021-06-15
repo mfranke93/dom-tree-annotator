@@ -128,6 +128,9 @@ function recalculateAndVisualize(ranges) {
     }
   }
   p.html(text);
+  p.selectAll('span.annotation').on('click', function() {
+    console.log(this.getAttribute('data-items'));
+  });
 }
 
 
@@ -202,7 +205,11 @@ const _ranges = [];
 
 p.on('mouseup', () => {
   const selection = document.getSelection();
+  if (selection.isCollapsed) return;
+
   const range = selection.getRangeAt(0);
+  const selection_content = range.cloneContents().textContent;
+  if (selection_content.length === 0) return;
 
   // find offset from start
   const r2 = new Range();
@@ -210,7 +217,7 @@ p.on('mouseup', () => {
   r2.setEnd(range.startContainer, range.startOffset);
   const pre_contents = r2.cloneContents().textContent;
 
-  _ranges.push({id: next_id++, start: pre_contents.length, end: pre_contents.length + range.cloneContents().textContent.length});
+  _ranges.push({id: next_id++, start: pre_contents.length, end: pre_contents.length + selection_content.length});
 
   recalculateAndVisualize(_ranges);
 });
