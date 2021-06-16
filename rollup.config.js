@@ -1,6 +1,6 @@
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
-import minify from 'rollup-plugin-babel-minify';
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import { terser } from 'rollup-plugin-terser';
 import pkg from './package.json';
 
 export default [{
@@ -14,7 +14,7 @@ export default [{
   plugins: [
     resolve(),
     commonjs(),
-    minify({ comments: false }),
+    terser(),
   ],
 }];
 
