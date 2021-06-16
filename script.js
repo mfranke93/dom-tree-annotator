@@ -1,6 +1,13 @@
-const text_content = `Consectetur enim laborum velit porro earum quae vitae Illum sit autem eos eos labore reprehenderit. Sed quo labore soluta eius.
+import {unoverlapRanges, insertRanges} from './util.js';
 
-Foo bar baz; bak foo. Sed quo labore soluta eius.`;
+const text_content = `<p id="first">
+  Consectetur enim laborum velit porro earum quae vitae <b>Illum</b> sit autem eos eos labore reprehenderit.
+  Sed quo labore soluta eius.
+</p>
+
+<p style="color: red;">
+  Foo bar baz; bak foo. Sed quo labore soluta eius.
+</P`;
 
 const log_content = d3.select('.content');
 log_content.append('h3').text('Non-overlapping Ranges');
@@ -101,106 +108,40 @@ function recalculateAndVisualize(ranges) {
 
 
   // fill in text nodes
-  const text_length = text_content.length;
-  const text_nodes = [];
-  if (nonoverlapping.length) {
-    if (nonoverlapping[0].start > 0) text_nodes.push({start: 0, end: nonoverlapping[0].start, ranges: null});
-
-    for (let i = 0; i < nonoverlapping.length - 1; ++i)
-      if (nonoverlapping[i].end !== nonoverlapping[i+1].start)
-        text_nodes.push({start:nonoverlapping[i].end, end: nonoverlapping[i+1].start, ranges: null});
-
-    if (nonoverlapping[nonoverlapping.length - 1].end !== text_length) text_nodes.push({start: nonoverlapping[nonoverlapping.length - 1].end, end: text_length, ranges: null});
-  } else {
-    text_nodes.push({start: 0, end: text_length, ranges: null});
-  }
-
-  const all_ranges = [...nonoverlapping, ...text_nodes]
-    .sort((a,b) => a.start - b.start)
-    .map(d => {
-      d.text = text_content.slice(d.start, d.end);
-      return d;
-    });
-
-  let text = '';
-  for (const node of all_ranges) {
-    if (node.ranges === null) {
-      text += node.text;
-    } else {
-      text += `<span class="annotation" data-items="${node.ranges.map(d => d.id).join(', ')}">${node.text}</span>`;
-    }
-  }
+  const text = insertRanges(text_content, nonoverlapping);
+  //const text_length = text_content.length;
+  //const text_nodes = [];
+  //if (nonoverlapping.length) {
+  //  if (nonoverlapping[0].start > 0) text_nodes.push({start: 0, end: nonoverlapping[0].start, ranges: null});
+  //
+  //  for (let i = 0; i < nonoverlapping.length - 1; ++i)
+  //    if (nonoverlapping[i].end !== nonoverlapping[i+1].start)
+  //      text_nodes.push({start:nonoverlapping[i].end, end: nonoverlapping[i+1].start, ranges: null});
+  //
+  //  if (nonoverlapping[nonoverlapping.length - 1].end !== text_length) text_nodes.push({start: nonoverlapping[nonoverlapping.length - 1].end, end: text_length, ranges: null});
+  //} else {
+  //  text_nodes.push({start: 0, end: text_length, ranges: null});
+  //}
+  //
+  //const all_ranges = [...nonoverlapping, ...text_nodes]
+  //  .sort((a,b) => a.start - b.start)
+  //  .map(d => {
+  //    d.text = text_content.slice(d.start, d.end);
+  //    return d;
+  //  });
+  //
+  //let text = '';
+  //for (const node of all_ranges) {
+  //  if (node.ranges === null) {
+  //    text += node.text;
+  //  } else {
+  //    text += `<span class="annotation" data-items="${node.ranges.map(d => d.id).join(', ')}">${node.text}</span>`;
+  //  }
+  //}
   p.html(text);
   p.selectAll('span.annotation').on('click', function() {
     console.log(this.getAttribute('data-items'));
   });
-}
-
-
-function unoverlapRanges(ranges) {
-  if (ranges.length === 0) return [];
-
-  // sort ranges ascending by start
-  ranges.sort((a, b) => a.start - b.start);
-
-  const active = new Set();       // currently active ranges
-  let index = 0;                  // current index
-  const result = [];              // resulting ranges
-
-  // initialize
-  const first = ranges.shift();
-  index = first.start;
-  active.add(first);
-
-  while ((active.size > 0) || (ranges.length > 0)) {
-    const next_beginning = ranges.length
-      ? ranges[0]
-      : { start: Infinity };
-    const next_ending = active.size
-      ? Array.from(active).sort((a,b) => a.end - b.end)[0]
-      : { end: Infinity };
-
-    if (next_beginning.start < next_ending.end) {
-      if (active.size) result.push({
-        start: index,
-        end: next_beginning.start,
-        ranges: Array.from(active)
-      });
-      index = next_beginning.start;
-      // get all starting here
-      while (ranges.length > 0 && ranges[0].start === index) {
-        active.add(ranges.shift());
-      }
-    } else if (next_beginning.start === next_ending.end) {
-      if (active.size) result.push({
-        start: index,
-        end: next_beginning.start,
-        ranges: Array.from(active)
-      });
-      index = next_beginning.start;
-      // remove all ending here
-      Array.from(active)
-        .filter(d => d.end === index)
-        .forEach(active.delete.bind(active));
-      // get all starting here
-      while (ranges.length > 0 && ranges[0].start === index) {
-        active.add(ranges.shift());
-      }
-    } else {
-      if (active.size) result.push({
-        start: index,
-        end: next_ending.end,
-        ranges: Array.from(active)
-      });
-      index = next_ending.end;
-      // remove all ending here
-      Array.from(active)
-        .filter(d => d.end === index)
-        .forEach(active.delete.bind(active));
-    }
-  }
-
-  return result;
 }
 
 let next_id = 0;

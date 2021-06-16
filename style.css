@@ -10,7 +10,7 @@
 }
 
 .annotated-text {
-  white-space: pre-wrap;
+  /* white-space: pre-wrap; */
 }
 
 .annotated-text .annotation {
@@ -18,6 +18,6 @@
 }
 
 .annotated-text .annotation::after {
-  content: attr(data-items);
+  content: attr(data-annotation-ids);
   font-size: xx-small;
 }
