@@ -72,7 +72,6 @@ export function insertRanges(innerHTML, nonoverlapping_ranges) {
 }
 
 function handleNode(node, text_position, range_list): [number, Node[]] {
-  // TODO: bug when creating annotation later: position off-by-n error
   const output_nodes: Node[] = [];
   // node is text_node (recursion abort)
   if (node instanceof Text) {
@@ -100,16 +99,20 @@ function handleNode(node, text_position, range_list): [number, Node[]] {
       const range_start = Math.max(range.start, text_position) - text_position; // range starts either at start of node, or later
       const range_end = Math.min(range.end, text_position + length) - text_position;  // range ends either at end of node, or earlier
 
-      const span = document.createElement('span');
-      span.classList.add('annotation');
-      span.setAttribute('data-annotation-ids', range.ranges.map(d => d.id).join(','));
       const text_content = node.data.slice(range_start, range_end);
 
-      // if the text only consists of newlines, it can be ignored
+      // if the text only consists of newlines, it can be ignored as part of the annotation
       if (!text_content.match(/^\n+$/)) {
+        const span = document.createElement('span');
+        span.classList.add('annotation');
+        span.setAttribute('data-annotation-ids', range.ranges.map(d => d.id).join(','));
+
         // use innerHTML to avoid creation of additional <br /> elements
         span.innerHTML = text_content;
         output_nodes.push(span);
+      } else {
+        // still need that content
+        output_nodes.push(document.createTextNode(text_content));
       }
 
       // last range exceeds text node

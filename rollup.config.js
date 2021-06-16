@@ -26,6 +26,9 @@ export default [
       resolve(),
       commonjs(),
     ],
+    watch: {
+      include: 'src/**/*',
+    },
   },
   {
     input: './lib/dts/index.d.ts',
@@ -34,6 +37,9 @@ export default [
       format: 'es',
     },
     plugins: [ dts(), ],
+    watch: {
+      include: 'lib/dts/**/*',
+    },
   },
 ];
 
