@@ -1,12 +1,12 @@
-export function unoverlapRanges(ranges) {
+export function unoverlapRanges(ranges: any[]): any[] {
   if (ranges.length === 0) return [];
 
   // sort ranges ascending by start
   ranges.sort((a, b) => a.start - b.start);
 
-  const active = new Set();       // currently active ranges
+  const active = new Set<any>();       // currently active ranges
   let index = 0;                  // current index
-  const result = [];              // resulting ranges
+  const result: any[] = [];              // resulting ranges
 
   // initialize
   const first = ranges.shift();
@@ -17,7 +17,7 @@ export function unoverlapRanges(ranges) {
     const next_beginning = ranges.length
       ? ranges[0]
       : { start: Infinity };
-    const next_ending = active.size
+    const next_ending: any = active.size
       ? Array.from(active).sort((a,b) => a.end - b.end)[0]
       : { end: Infinity };
 
@@ -68,11 +68,11 @@ export function insertRanges(innerHTML, nonoverlapping_ranges) {
   d.innerHTML = innerHTML;
 
   const [_, [new_div]] = handleNode(d, 0, nonoverlapping_ranges);
-  return new_div.innerHTML;
+  return (<HTMLElement>new_div).innerHTML;
 }
 
-function handleNode(node, text_position, range_list) {
-  const output_nodes = [];
+function handleNode(node, text_position, range_list): [number, Node[]] {
+  const output_nodes: Node[] = [];
   // node is text_node (recursion abort)
   if (node instanceof Text) {
     const length = node.length;
@@ -85,7 +85,7 @@ function handleNode(node, text_position, range_list) {
       output_nodes.push(document.createTextNode(node.data.slice(0, range_list[0].start - text_position)));
     }
 
-    let last_range = null;
+    let last_range: any = null;
     while (range_list.length > 0 && range_list[0].start < text_position + length) {
       // insert text node between ranges if non-empty
       if (last_range !== null && last_range.end < range_list[0].start) {

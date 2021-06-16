@@ -1,0 +1,16 @@
+{
+  "name": "dom-tree-annotator",
+  "version": "0.0.1",
+  "description": "Insert annotation spans into a DOM tree.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc src/index.ts",
+    "demo": "tsc --lib es6,es2018,dom --target es6 --outDir demo/ src/demo.ts"
+  },
+  "author": "Max Franke",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.3.2"
+  }
+}

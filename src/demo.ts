@@ -1,4 +1,5 @@
 import {unoverlapRanges, insertRanges} from './util.js';
+declare const d3: any;
 
 const text_content = `<p id="first">
   Consectetur enim laborum velit porro earum quae vitae?
@@ -124,10 +125,10 @@ function recalculateAndVisualize(ranges) {
 }
 
 let next_id = 0;
-const _ranges = [];
+const _ranges: any[] = [];
 
 p.on('mouseup', () => {
-  const selection = document.getSelection();
+  const selection: any = document.getSelection();
   if (selection.isCollapsed) return;
 
   const range = selection.getRangeAt(0);
@@ -138,7 +139,7 @@ p.on('mouseup', () => {
   const r2 = new Range();
   r2.setStart(p.node(), 0);
   r2.setEnd(range.startContainer, range.startOffset);
-  const pre_contents = r2.cloneContents().textContent;
+  const pre_contents = r2.cloneContents().textContent as string;
 
   _ranges.push({id: next_id++, start: pre_contents.length, end: pre_contents.length + selection_content.length});
 
