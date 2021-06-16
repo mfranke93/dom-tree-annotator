@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "esnext",
+    "lib": ["es6", "es2018", "dom"],
+    "declaration": true,
+    "declarationDir": "./dts",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "strict": true,
+    "noImplicitAny": false,
+    "removeComments": false,
+    "preserveConstEnums": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "**/__tests__/*"]
+}
