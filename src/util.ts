@@ -72,6 +72,7 @@ export function insertRanges(innerHTML, nonoverlapping_ranges) {
 }
 
 function handleNode(node, text_position, range_list): [number, Node[]] {
+  // TODO: bug when creating annotation later: position off-by-n error
   const output_nodes: Node[] = [];
   // node is text_node (recursion abort)
   if (node instanceof Text) {

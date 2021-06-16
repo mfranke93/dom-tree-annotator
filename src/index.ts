@@ -1,3 +1,3 @@
-import {unoverlapRanges, insertRanges} from './util.js';
+import {unoverlapRanges, insertRanges} from './util';
 
 export {unoverlapRanges, insertRanges};
