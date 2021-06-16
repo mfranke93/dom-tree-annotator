@@ -9,7 +9,7 @@ const text_content = `<p id="first">
 
 <p style="color: red;">
   Foo bar baz; bak foo. Sed quo labore soluta eius.
-</P`;
+</p>`;
 
 const log_content = d3.select('.content');
 log_content.append('h3').text('Non-overlapping Ranges');
