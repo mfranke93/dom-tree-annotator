@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "description": "Insert annotation spans into a DOM tree.",
   "main": "lib/index.js",
+  "module": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "browser": "lib/dom-tree-annotator.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
