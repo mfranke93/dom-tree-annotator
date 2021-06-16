@@ -1,4 +1,4 @@
-import { unoverlapRanges, insertRanges } from '../lib/index.js';
+const { unoverlapRanges, insertRanges } = DomAnnotator;
 
 const text_content = `<p id="first">
   Consectetur enim laborum velit porro earum quae vitae?
