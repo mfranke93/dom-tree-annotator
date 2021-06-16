@@ -99,13 +99,17 @@ function handleNode(node, text_position, range_list): [number, Node[]] {
       const range_start = Math.max(range.start, text_position) - text_position; // range starts either at start of node, or later
       const range_end = Math.min(range.end, text_position + length) - text_position;  // range ends either at end of node, or earlier
 
-
       const span = document.createElement('span');
       span.classList.add('annotation');
       span.setAttribute('data-annotation-ids', range.ranges.map(d => d.id).join(','));
-      span.innerText = node.data.slice(range_start, range_end);
+      const text_content = node.data.slice(range_start, range_end);
 
-      output_nodes.push(span);
+      // if the text only consists of newlines, it can be ignored
+      if (!text_content.match(/^\n+$/)) {
+        // use innerHTML to avoid creation of additional <br /> elements
+        span.innerHTML = text_content;
+        output_nodes.push(span);
+      }
 
       // last range exceeds text node
       if (range.end > text_position + length) {
