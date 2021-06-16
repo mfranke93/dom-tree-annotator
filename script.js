@@ -1,7 +1,8 @@
 import {unoverlapRanges, insertRanges} from './util.js';
 
 const text_content = `<p id="first">
-  Consectetur enim laborum velit porro earum quae vitae <b>Illum</b> sit autem eos eos labore reprehenderit.
+  Consectetur enim laborum velit porro earum quae vitae?
+  <b>Illum</b> sit autem eos eos labore reprehenderit.
   Sed quo labore soluta eius.
 </p>
 
@@ -94,9 +95,17 @@ function recalculateAndVisualize(ranges) {
     });
 
   // text
+  let text = '';
+  const traverse = (n) => {
+    if (n instanceof Text) text += n.data;
+    else n.childNodes.forEach(c => traverse(c));
+  };
+  const d = document.createElement('div');
+  d.innerHTML = text_content;
+  traverse(d);
   d3.select('svg')
     .selectAll('.dummy')
-    .data(text_content.split(''))
+    .data(text.split(''))
     .enter()
     .append('text')
     .attr('x', (d,i) => x(i) + (x(1) - x(0))/2)
@@ -108,39 +117,9 @@ function recalculateAndVisualize(ranges) {
 
 
   // fill in text nodes
-  const text = insertRanges(text_content, nonoverlapping);
-  //const text_length = text_content.length;
-  //const text_nodes = [];
-  //if (nonoverlapping.length) {
-  //  if (nonoverlapping[0].start > 0) text_nodes.push({start: 0, end: nonoverlapping[0].start, ranges: null});
-  //
-  //  for (let i = 0; i < nonoverlapping.length - 1; ++i)
-  //    if (nonoverlapping[i].end !== nonoverlapping[i+1].start)
-  //      text_nodes.push({start:nonoverlapping[i].end, end: nonoverlapping[i+1].start, ranges: null});
-  //
-  //  if (nonoverlapping[nonoverlapping.length - 1].end !== text_length) text_nodes.push({start: nonoverlapping[nonoverlapping.length - 1].end, end: text_length, ranges: null});
-  //} else {
-  //  text_nodes.push({start: 0, end: text_length, ranges: null});
-  //}
-  //
-  //const all_ranges = [...nonoverlapping, ...text_nodes]
-  //  .sort((a,b) => a.start - b.start)
-  //  .map(d => {
-  //    d.text = text_content.slice(d.start, d.end);
-  //    return d;
-  //  });
-  //
-  //let text = '';
-  //for (const node of all_ranges) {
-  //  if (node.ranges === null) {
-  //    text += node.text;
-  //  } else {
-  //    text += `<span class="annotation" data-items="${node.ranges.map(d => d.id).join(', ')}">${node.text}</span>`;
-  //  }
-  //}
-  p.html(text);
+  p.html(insertRanges(text_content, nonoverlapping));
   p.selectAll('span.annotation').on('click', function() {
-    console.log(this.getAttribute('data-items'));
+    console.log(this.getAttribute('data-annotation-ids'));
   });
 }
 

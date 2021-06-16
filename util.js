@@ -87,6 +87,11 @@ function handleNode(node, text_position, range_list) {
 
     let last_range = null;
     while (range_list.length > 0 && range_list[0].start < text_position + length) {
+      // insert text node between ranges if non-empty
+      if (last_range !== null && last_range.end < range_list[0].start) {
+        output_nodes.push(document.createTextNode(node.data.slice(last_range.end - text_position, range_list[0].start - text_position)));
+      }
+
       const clone = node.cloneNode();
       const range = range_list.shift();
       last_range = range;
@@ -125,6 +130,9 @@ function handleNode(node, text_position, range_list) {
     for (let i = 0; i < node.childNodes.length; ++i) {
       // for each child, recurse, get back total text length of child and new child nodes
       const [len, inner_nodes] = handleNode(node.childNodes[i], text_position + offset, range_list);
+
+      console.log(clone.nodeName, node.childNodes[i].nodeName, inner_nodes);
+
       offset += len;
       inner_nodes.forEach(d => clone.appendChild(d));
     }
