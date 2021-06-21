@@ -12,13 +12,11 @@ export default function rangesFromAnnotations(annotations: Annotation[]): Range[
   const result: Range[] = [];              // resulting ranges
 
   // initialize
-  console.log(JSON.stringify(annotations));
   const first = annotations.shift() as Annotation;  // ranges cannot be empty here
   index = first.start;
   active.add(first);
 
   while ((active.size > 0) || (annotations.length > 0)) {
-    console.log(index, active);
     const next_beginning: Annotation = annotations.length
       ? annotations[0]
       : new Annotation(Infinity, Infinity);
@@ -27,7 +25,7 @@ export default function rangesFromAnnotations(annotations: Annotation[]): Range[
       : new Annotation(Infinity, Infinity);
 
     if (next_beginning.start < next_ending.end) {
-      if (active.size) result.push(new Range(index, next_beginning.start, Array.from(active)));
+      createRange(result, active, index, next_beginning.start);
       index = next_beginning.start;
 
       // get all starting here
@@ -35,7 +33,7 @@ export default function rangesFromAnnotations(annotations: Annotation[]): Range[
         active.add(annotations.shift() as Annotation);
       }
     } else if (next_beginning.start === next_ending.end) {
-      if (active.size) result.push(new Range(index, next_beginning.start, Array.from(active)));
+      createRange(result, active, index, next_beginning.start);
       index = next_beginning.start;
 
       // remove all ending here
@@ -48,7 +46,7 @@ export default function rangesFromAnnotations(annotations: Annotation[]): Range[
         active.add(annotations.shift() as Annotation);
       }
     } else {
-      if (active.size) result.push(new Range(index, next_ending.end, Array.from(active)));
+      createRange(result, active, index, next_ending.end);
       index = next_ending.end;
 
       // remove all ending here
@@ -59,5 +57,21 @@ export default function rangesFromAnnotations(annotations: Annotation[]): Range[
   }
 
   return result;
+}
+
+// helper function to handle addition and creation
+function createRange(
+  arr: Range[],
+  active: Set<Annotation>,
+  start_index: number,
+  end_index: number
+): void {
+  if (active.size === 0) return;
+
+  const active_arr = Array.from(active);
+  const range = new Range(start_index, end_index, active_arr);
+
+  arr.push(range);
+  active_arr.forEach(ann => ann.ranges.push(range));
 }
 
