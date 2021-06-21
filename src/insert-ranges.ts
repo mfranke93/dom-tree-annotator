@@ -1,9 +1,9 @@
-import Range from './range';
+import TextRange from './text-range';
 import Annotation from './annotation';
 
 export default function insertRanges(
   innerHTML: string,
-  nonoverlapping_ranges: Range[]
+  nonoverlapping_ranges: TextRange[]
 ): string {
   const d = document.createElement('div') as HTMLDivElement;
   d.innerHTML = innerHTML;
@@ -13,7 +13,7 @@ export default function insertRanges(
   return (<HTMLElement>new_div).innerHTML;
 }
 
-function handleNode(node: Node, text_position: number, range_list: Range[]): [number, Node[]] {
+function handleNode(node: Node, text_position: number, range_list: TextRange[]): [number, Node[]] {
   const output_nodes: Node[] = [];
 
   // node is text_node (recursion abort)
@@ -28,7 +28,7 @@ function handleNode(node: Node, text_position: number, range_list: Range[]): [nu
       output_nodes.push(document.createTextNode(node.data.slice(0, range_list[0].start - text_position)));
     }
 
-    let last_range: Range | null = null;
+    let last_range: TextRange | null = null;
     while (range_list.length > 0 && range_list[0].start < text_position + length) {
       // insert text node between ranges if non-empty
       if (last_range !== null && last_range.end < range_list[0].start) {
@@ -36,7 +36,7 @@ function handleNode(node: Node, text_position: number, range_list: Range[]): [nu
       }
 
       const clone = node.cloneNode();
-      const range = range_list.shift() as Range;
+      const range = range_list.shift() as TextRange;
       last_range = range;
 
       const range_start = Math.max(range.start, text_position) - text_position; // range starts either at start of node, or later

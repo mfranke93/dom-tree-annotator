@@ -1,4 +1,4 @@
-import Range from './range';
+import Range from './text-range';
 import Annotation from './annotation';
 
 export default function rangesFromAnnotations(annotations: Annotation[]): Range[] {

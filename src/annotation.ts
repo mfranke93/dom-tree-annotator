@@ -1,7 +1,7 @@
-import Range from './range';
+import TextRange from './text-range';
 
 export default class Annotation {
-  ranges: Range[] = [];
+  ranges: TextRange[] = [];
 
   constructor(
     readonly start: number,

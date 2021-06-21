@@ -10,13 +10,15 @@ export default [
     input: 'src/index.ts',
     output: [
       {
-        file: pkg.main,
+        file: pkg.module,
         format: 'es',
+        sourcemap: true,
+        plugins: [ terser(), ],
       },
       {
         name: "DomAnnotator",
         file: pkg.browser,
-        format: 'es',
+        format: 'iife',
         sourcemap: true,
         plugins: [ terser(), ],
       },

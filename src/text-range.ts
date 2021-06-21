@@ -1,6 +1,6 @@
 import Annotation from './annotation';
 
-export default class Range {
+export default class TextRange {
   constructor(
     readonly start: number,
     readonly end: number,
