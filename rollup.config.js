@@ -16,7 +16,7 @@ export default [
       {
         name: "DomAnnotator",
         file: pkg.browser,
-        format: 'iife',
+        format: 'es',
         sourcemap: true,
         plugins: [ terser(), ],
       },

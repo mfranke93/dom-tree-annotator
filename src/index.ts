@@ -1,3 +1,5 @@
-import {unoverlapRanges, insertRanges} from './util';
+import insertRanges from './insert-ranges';
+import rangesFromAnnotations from './unoverlap-ranges';
+import Annotation from './annotation';
 
-export {unoverlapRanges, insertRanges};
+export {rangesFromAnnotations, insertRanges, Annotation};

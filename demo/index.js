@@ -1,4 +1,4 @@
-const { unoverlapRanges, insertRanges } = DomAnnotator;
+import { rangesFromAnnotations, insertRanges, Annotation } from '../lib/dom-tree-annotator.min.js';
 
 const text_content = `<p id="first">
   Consectetur enim laborum velit porro earum quae vitae?
@@ -14,6 +14,8 @@ log_content.append('h3').text('Non-overlapping Ranges');
 const listing = log_content.append('ol');
 log_content.append('h3').text('As spans');
 const p = log_content.append('p').classed('annotated-text', true);
+
+
 function recalculateAndVisualize(ranges) {
     const x = d3.scaleLinear()
         .domain([0, text_content.length])
@@ -53,13 +55,13 @@ function recalculateAndVisualize(ranges) {
             .attr('font-size', 12);
     });
     // calculate and list
-    const nonoverlapping = unoverlapRanges(JSON.parse(JSON.stringify(ranges)));
+    const nonoverlapping = rangesFromAnnotations(JSON.parse(JSON.stringify(ranges)));  // clone array
     const sel3 = listing.selectAll('li').data(nonoverlapping, (d, i) => i);
     sel3.enter()
         .append('li')
         .merge(sel3)
         .text(d => {
-        return "Range from " + d.start + " to " + d.end + " containing " + d.ranges.map(d => d.id).join(", ");
+        return "Range from " + d.start + " to " + d.end + " containing " + d.annotations.map(d => d.data.id).join(", ");
     });
     sel3.exit().remove();
     // visualize
@@ -70,7 +72,7 @@ function recalculateAndVisualize(ranges) {
         .append('rect')
         .classed('range-nonoverlapping', true)
         .each(function (d) {
-        d3.select(this).append('title').text(d => 'Range for items ' + d.ranges.map(d => d.id).join(', '));
+        d3.select(this).append('title').text(d => 'Range for items ' + d.annotations.map(d => d.data.id).join(', '));
     })
         .merge(sel2)
         .attr('x', d => x(d.start))
@@ -84,7 +86,7 @@ function recalculateAndVisualize(ranges) {
             .append('text')
             .attr('x', x(d.start) + 5)
             .attr('y', y('dummy') + y.bandwidth() - 5)
-            .text(d.ranges.map(d => d.id).join(','))
+            .text(d.annotations.map(d => d.data.id).join(','))
             .attr('fill', 'white')
             .attr('font-size', 12);
     });
@@ -131,7 +133,7 @@ p.on('mouseup', () => {
     r2.setStart(p.node(), 0);
     r2.setEnd(range.startContainer, range.startOffset);
     const pre_contents = r2.cloneContents().textContent;
-    _ranges.push({ id: next_id++, start: pre_contents.length, end: pre_contents.length + selection_content.length });
+    _ranges.push(new Annotation(pre_contents.length, pre_contents.length + selection_content.length, {id: next_id++}));
     recalculateAndVisualize(_ranges);
 });
 recalculateAndVisualize(_ranges);

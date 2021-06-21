@@ -1,78 +1,21 @@
-export function unoverlapRanges(ranges: any[]): any[] {
-  if (ranges.length === 0) return [];
+import Range from './range';
+import Annotation from './annotation';
 
-  // sort ranges ascending by start
-  ranges.sort((a, b) => a.start - b.start);
-
-  const active = new Set<any>();       // currently active ranges
-  let index = 0;                  // current index
-  const result: any[] = [];              // resulting ranges
-
-  // initialize
-  const first = ranges.shift();
-  index = first.start;
-  active.add(first);
-
-  while ((active.size > 0) || (ranges.length > 0)) {
-    const next_beginning = ranges.length
-      ? ranges[0]
-      : { start: Infinity };
-    const next_ending: any = active.size
-      ? Array.from(active).sort((a,b) => a.end - b.end)[0]
-      : { end: Infinity };
-
-    if (next_beginning.start < next_ending.end) {
-      if (active.size) result.push({
-        start: index,
-        end: next_beginning.start,
-        ranges: Array.from(active)
-      });
-      index = next_beginning.start;
-      // get all starting here
-      while (ranges.length > 0 && ranges[0].start === index) {
-        active.add(ranges.shift());
-      }
-    } else if (next_beginning.start === next_ending.end) {
-      if (active.size) result.push({
-        start: index, end: next_beginning.start,
-        ranges: Array.from(active)
-      });
-      index = next_beginning.start;
-      // remove all ending here
-      Array.from(active)
-        .filter(d => d.end === index)
-        .forEach(active.delete.bind(active));
-      // get all starting here
-      while (ranges.length > 0 && ranges[0].start === index) {
-        active.add(ranges.shift());
-      }
-    } else {
-      if (active.size) result.push({
-        start: index,
-        end: next_ending.end,
-        ranges: Array.from(active)
-      });
-      index = next_ending.end;
-      // remove all ending here
-      Array.from(active)
-        .filter(d => d.end === index)
-        .forEach(active.delete.bind(active));
-    }
-  }
-
-  return result;
-}
-
-export function insertRanges(innerHTML, nonoverlapping_ranges) {
-  const d = document.createElement('div');
+export default function insertRanges(
+  innerHTML: string,
+  nonoverlapping_ranges: Range[]
+): string {
+  const d = document.createElement('div') as HTMLDivElement;
   d.innerHTML = innerHTML;
 
   const [_, [new_div]] = handleNode(d, 0, nonoverlapping_ranges);
+  //d.remove();
   return (<HTMLElement>new_div).innerHTML;
 }
 
-function handleNode(node, text_position, range_list): [number, Node[]] {
+function handleNode(node: Node, text_position: number, range_list: Range[]): [number, Node[]] {
   const output_nodes: Node[] = [];
+
   // node is text_node (recursion abort)
   if (node instanceof Text) {
     const length = node.length;
@@ -85,7 +28,7 @@ function handleNode(node, text_position, range_list): [number, Node[]] {
       output_nodes.push(document.createTextNode(node.data.slice(0, range_list[0].start - text_position)));
     }
 
-    let last_range: any = null;
+    let last_range: Range | null = null;
     while (range_list.length > 0 && range_list[0].start < text_position + length) {
       // insert text node between ranges if non-empty
       if (last_range !== null && last_range.end < range_list[0].start) {
@@ -93,7 +36,7 @@ function handleNode(node, text_position, range_list): [number, Node[]] {
       }
 
       const clone = node.cloneNode();
-      const range = range_list.shift();
+      const range = range_list.shift() as Range;
       last_range = range;
 
       const range_start = Math.max(range.start, text_position) - text_position; // range starts either at start of node, or later
@@ -105,7 +48,7 @@ function handleNode(node, text_position, range_list): [number, Node[]] {
       if (!text_content.match(/^\n+$/)) {
         const span = document.createElement('span');
         span.classList.add('annotation');
-        span.setAttribute('data-annotation-ids', range.ranges.map(d => d.id).join(','));
+        span.setAttribute('data-annotation-ids', range.annotations.map(d => d.data['id']).join(','));
 
         // use innerHTML to avoid creation of additional <br /> elements
         span.innerHTML = text_content;
@@ -131,15 +74,13 @@ function handleNode(node, text_position, range_list): [number, Node[]] {
   } else {
     // HTMLElement
 
-    const clone = node.cloneNode();
+    const clone = node.cloneNode() as HTMLElement;
     clone.innerHTML = '';
 
     let offset = 0;
     for (let i = 0; i < node.childNodes.length; ++i) {
       // for each child, recurse, get back total text length of child and new child nodes
       const [len, inner_nodes] = handleNode(node.childNodes[i], text_position + offset, range_list);
-
-      console.log(clone.nodeName, node.childNodes[i].nodeName, inner_nodes);
 
       offset += len;
       inner_nodes.forEach(d => clone.appendChild(d));
