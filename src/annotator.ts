@@ -2,20 +2,18 @@ import Annotation from './annotation';
 import TextRange from './text-range';
 import rangesFromAnnotations from './unoverlap-ranges';
 import insertRanges from './insert-ranges';
-
+import AnnotationCreationObject from './annotation-creation-object';
+import AnnotationCreationHook from './annotation-creation-hook';
+import defaultAnnotationCreationHook from './default-annotation-creation-hook';
 
 export default class Annotator extends EventTarget {
   private readonly _innerHTML: string;
   private _annotations: Annotation[] = [];
-
-  // TODO: temporary
-  private _next_id: number = 1;
-
-  private _connected_annotations: Annotation[] = [];
   private _ranges: TextRange[] = [];
 
   constructor(
     private readonly _target_node: HTMLElement,
+    private _annotation_creation_hook: AnnotationCreationHook = defaultAnnotationCreationHook,
   ) {
     super();
 
@@ -24,7 +22,7 @@ export default class Annotator extends EventTarget {
     this._target_node.addEventListener('mouseup', this.onPointerUp.bind(this));
   }
 
-  private onPointerUp(_: PointerEvent | MouseEvent) {
+  private async onPointerUp(_: PointerEvent | MouseEvent) {
     const selection = document.getSelection();
     if (selection && selection.isCollapsed) return;
 
@@ -46,16 +44,23 @@ export default class Annotator extends EventTarget {
     const pre_contents = r2.cloneContents().textContent as string;
     r2.detach();
 
-    this._annotations.push(new Annotation(pre_contents.length, pre_contents.length + selection_content.length, {id: this._next_id++}));
-
-    this.recalculate();
+    // create annotation, ask for extra data
+    const annotationCreationObject = new AnnotationCreationObject(pre_contents.length, pre_contents.length + selection_content.length, selection_content);
+    try {
+      const annotation_data = await new Promise((resolve, reject) => this._annotation_creation_hook.call(this, annotationCreationObject, resolve, reject));
+      this._annotations.push(new Annotation(annotationCreationObject.start, annotationCreationObject.end, annotation_data));
+      this.recalculate();
+    } catch (err) {
+      console.error(err);
+      selection?.empty();
+    }
   }
 
   private recalculate() {
     const annotations = this._annotations.map(a => {
       a.ranges = [];
       return a;
-    });  // flat copy
+    });  // flat copy, empty out old range references
     const ranges = rangesFromAnnotations(annotations);
 
     this._ranges = ranges;
@@ -74,5 +79,9 @@ export default class Annotator extends EventTarget {
 
   get annotations(): Annotation[] {
     return this._annotations;
+  }
+
+  setAnnotationCreationHook(hook: AnnotationCreationHook): void {
+    this._annotation_creation_hook = hook;
   }
 };

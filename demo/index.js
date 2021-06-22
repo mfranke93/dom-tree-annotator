@@ -128,3 +128,9 @@ function onAnnotationChange(evt) {
 
 const annotator = new Annotator(p.node());
 annotator.addEventListener('annotationchange', onAnnotationChange);
+
+// give each annotation a number
+let _next_id = 1;
+annotator.setAnnotationCreationHook(async function(_, resolve, __) {
+  resolve({id: _next_id++});
+});
