@@ -45,10 +45,13 @@ export default class Annotator extends EventTarget {
     r2.detach();
 
     // create annotation, ask for extra data
-    const annotationCreationObject = new AnnotationCreationObject(pre_contents.length, pre_contents.length + selection_content.length, selection_content);
+    const start = pre_contents.length;
+    const end = start + selection_content.length;
+
+    const annotationCreationObject = new AnnotationCreationObject(start, end, selection_content);
     try {
       const annotation_data = await new Promise((resolve, reject) => this._annotation_creation_hook.call(this, annotationCreationObject, resolve, reject));
-      this._annotations.push(new Annotation(annotationCreationObject.start, annotationCreationObject.end, annotation_data));
+      this._annotations.push(new Annotation(start, end, annotation_data));
       this.recalculate();
     } catch (err) {
       console.error(err);
