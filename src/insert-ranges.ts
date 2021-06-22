@@ -4,13 +4,18 @@ import Annotation from './annotation';
 export default function insertRanges(
   innerHTML: string,
   nonoverlapping_ranges: TextRange[]
-): string {
+): DocumentFragment {
+  // create dummy element to hold contents
   const d = document.createElement('div') as HTMLDivElement;
   d.innerHTML = innerHTML;
 
+  // recurse through tree, insert TextRanges as <span>s, return top-level element
   const [_, [new_div]] = handleNode(d, 0, nonoverlapping_ranges);
-  //d.remove();
-  return (<HTMLElement>new_div).innerHTML;
+
+  // copy actual DOM nodes to a DocumentFragment, so that the references in the TextRanges are still correct
+  const fragment = new DocumentFragment();
+  new_div.childNodes.forEach(node => fragment.appendChild(node));
+  return fragment;
 }
 
 function handleNode(node: Node, text_position: number, range_list: TextRange[]): [number, Node[]] {
@@ -45,7 +50,11 @@ function handleNode(node: Node, text_position: number, range_list: TextRange[]):
       const text_content = node.data.slice(range_start, range_end);
 
       // if the text only consists of newlines, it can be ignored as part of the annotation
-      if (!text_content.match(/^\n+$/)) {
+      if (text_content.match(/^\n+$/)) {
+        // still need that content
+        output_nodes.push(document.createTextNode(text_content));
+      } else {
+        // create actual span
         const span = document.createElement('span');
         span.classList.add('annotation');
         span.setAttribute('data-annotation-ids', range.annotations.map(d => d.data['id']).join(','));
@@ -53,9 +62,9 @@ function handleNode(node: Node, text_position: number, range_list: TextRange[]):
         // use innerHTML to avoid creation of additional <br /> elements
         span.innerHTML = text_content;
         output_nodes.push(span);
-      } else {
-        // still need that content
-        output_nodes.push(document.createTextNode(text_content));
+
+        // set element
+        range.element = span;
       }
 
       // last range exceeds text node

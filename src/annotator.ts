@@ -68,12 +68,13 @@ export default class Annotator extends EventTarget {
 
     this._ranges = ranges;
 
-    const evt = new CustomEvent('annotationchange', {detail: {ranges,annotations:this._annotations}});
+    const evt = new CustomEvent('annotationchange', { detail: { ranges, annotations: this._annotations }});
     this.dispatchEvent(evt);
 
-    const ranges_flat_copy = ranges.map(d => d);
-    const new_inner = insertRanges(this._innerHTML, ranges_flat_copy);
-    this._target_node.innerHTML = new_inner;
+    const ranges_flat_copy = ranges.map(d => d);  // flat copy because insertRanges consumes array
+    const fragment = insertRanges(this._innerHTML, ranges_flat_copy);
+    this._target_node.innerHTML = '';  // clear content
+    this._target_node.appendChild(fragment);  // append DocumentFragment
   }
 
   get ranges(): TextRange[] {
