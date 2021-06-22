@@ -5,6 +5,8 @@ import typescript from '@rollup/plugin-typescript';
 import dts from 'rollup-plugin-dts';
 import pkg from './package.json';
 
+import scss from './rollup/rollup-plugin-scss';
+
 export default [
   {
     input: 'src/index.ts',
@@ -41,6 +43,16 @@ export default [
     plugins: [ dts(), ],
     watch: {
       include: 'lib/dts/**/*',
+    },
+  },
+  {
+    input: 'scss/dom-tree-annotator.scss',
+    plugins: [
+      scss(),
+    ],
+    output: {
+      file: 'lib/dom-tree-annotator.min.css',
+      sourcemap: true,
     },
   },
 ];

@@ -1,0 +1,10 @@
+@use 'colors' as *;
+
+.annotation {
+  background: $clr-bg;
+
+  &::after {
+    content: attr(data-annotation-ids);
+    font-size: xx-small;
+  }
+}

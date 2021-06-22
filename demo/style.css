@@ -8,16 +8,3 @@
 .listing {
   padding: 1em;
 }
-
-.annotated-text {
-  /* white-space: pre-wrap; */
-}
-
-.annotated-text .annotation {
-  background: #d9b1b1;
-}
-
-.annotated-text .annotation::after {
-  content: attr(data-annotation-ids);
-  font-size: xx-small;
-}
