@@ -11,7 +11,6 @@ export default function scss() {
       const code_map = sass.renderSync({
         file: id,
         sourceMap: 'dom-tree-annotator.min.css',
-        includePaths: ['scss/'],
         outputStyle: 'compressed',
         omitSourceMapUrl: true,
       });

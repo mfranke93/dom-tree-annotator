@@ -1,7 +1,7 @@
 import Annotation from './annotation';
 
 export default class TextRange {
-  element: HTMLElement | null = null;
+  elements: HTMLElement[] = [];
 
   constructor(
     readonly start: number,

@@ -127,7 +127,9 @@ function onAnnotationChange(evt) {
 }
 
 const annotator = new Annotator(p.node());
-annotator.addEventListener('annotationchange', onAnnotationChange);
+annotator.addEventListener('change', onAnnotationChange);
+annotator.addEventListener('hoverstart', evt => console.log('hoverstart', evt.detail));
+annotator.addEventListener('hoverend', evt => console.log('hoverend'));
 
 // give each annotation a number
 let _next_id = 1;

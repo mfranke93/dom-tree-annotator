@@ -68,13 +68,34 @@ export default class Annotator extends EventTarget {
 
     this._ranges = ranges;
 
-    const evt = new CustomEvent('annotationchange', { detail: { ranges, annotations: this._annotations }});
+    const evt = new CustomEvent('change', { detail: { ranges, annotations: this._annotations }});
     this.dispatchEvent(evt);
 
     const ranges_flat_copy = ranges.map(d => d);  // flat copy because insertRanges consumes array
     const fragment = insertRanges(this._innerHTML, ranges_flat_copy);
     this._target_node.innerHTML = '';  // clear content
     this._target_node.appendChild(fragment);  // append DocumentFragment
+
+    const nodes = this._target_node.querySelectorAll(':scope .annotation');
+    nodes.forEach(node => {
+      node.addEventListener('mouseenter', () => {
+        nodes.forEach(node2 => node2.classList.remove('annotation--hover-target'));
+
+        const range = this.ranges.find(r => r.elements.includes(node as HTMLElement));
+        if (range !== undefined) {
+          const ranges = new Set<TextRange>();
+          range.annotations.forEach(a => a.ranges.forEach(r => ranges.add(r)));
+          ranges.forEach(r => r.elements.forEach(d => d.classList.add('annotation--hover-target')));
+
+          this.dispatchEvent(new CustomEvent('hoverstart', { detail: range.annotations }));
+        }
+      });
+      node.addEventListener('mouseleave', () => {
+        nodes.forEach(node2 => node2.classList.remove('annotation--hover-target'));
+
+        this.dispatchEvent(new CustomEvent('hoverend'));
+      });
+    });
   }
 
   get ranges(): TextRange[] {

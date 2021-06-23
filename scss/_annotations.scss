@@ -1,0 +1,22 @@
+@use 'colors' as *;
+
+.annotation {
+  --annotation-bg-color: #{$clr-bg};
+  background: var(--annotation-bg-color);
+
+  &::after {
+    content: attr(data-annotation-ids);
+    font-size: xx-small;
+  }
+
+  &--overlap {
+    // This class is assigned to spans containing more than one annotation
+    --annotation-bg-color: #{$clr-annotation-bg-multiple};
+  }
+
+  &--hover-target {
+    // This class is assigned to all spans containing one or more annotation
+    // that is also contained in the currently hovered span.
+    outline: 1px solid steelblue;
+  }
+}

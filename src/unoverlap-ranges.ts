@@ -1,7 +1,7 @@
-import Range from './text-range';
+import TextRange from './text-range';
 import Annotation from './annotation';
 
-export default function rangesFromAnnotations(annotations: Annotation[]): Range[] {
+export default function rangesFromAnnotations(annotations: Annotation[]): TextRange[] {
   if (annotations.length === 0) return [];
 
   // sort ranges ascending by start
@@ -9,7 +9,7 @@ export default function rangesFromAnnotations(annotations: Annotation[]): Range[
 
   const active = new Set<Annotation>();       // currently active ranges
   let index: number = 0;                  // current index
-  const result: Range[] = [];              // resulting ranges
+  const result: TextRange[] = [];              // resulting ranges
 
   // initialize
   const first = annotations.shift() as Annotation;  // ranges cannot be empty here
@@ -61,7 +61,7 @@ export default function rangesFromAnnotations(annotations: Annotation[]): Range[
 
 // helper function to handle addition and creation
 function createRange(
-  arr: Range[],
+  arr: TextRange[],
   active: Set<Annotation>,
   start_index: number,
   end_index: number
@@ -69,7 +69,7 @@ function createRange(
   if (active.size === 0) return;
 
   const active_arr = Array.from(active);
-  const range = new Range(start_index, end_index, active_arr);
+  const range = new TextRange(start_index, end_index, active_arr);
 
   arr.push(range);
   active_arr.forEach(ann => ann.ranges.push(range));
