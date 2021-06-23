@@ -38,7 +38,7 @@ function onAnnotationChange(evt) {
     .range([20, 1180]);
   const y = d3.scaleBand()
     .domain([...annotations.map(d => d.data.id), 'dummy'])
-    .range([30, 430])
+    .range([30, 400])
     .paddingInner(0.2)
     .paddingOuter(0.2);
   const color = d3.scaleOrdinal(d3.schemeCategory10)
@@ -121,6 +121,17 @@ function onAnnotationChange(evt) {
     .attr('font-family', 'monospace')
     .attr('text-anchor', 'middle');
 
+  // axis
+  const ticks = x.ticks();
+  if (ticks[ticks.length - 1] !== x.domain()[1]) ticks.push(x.domain()[1]);  // add end
+
+  d3.selectAll('svg g.axis').remove();
+  d3.select('svg')
+    .append('g')
+    .classed('axis', true)
+    .attr('transform', `translate(0, ${y('dummy') + y.bandwidth() + 20})`)
+    .call(d3.axisBottom(x).tickValues(ticks));
+
   p.selectAll('span.annotation').on('click', function () {
     console.log(this.getAttribute('data-annotation-ids'));
   });
@@ -137,7 +148,6 @@ annotator.setAnnotationCreationHook(async function(_, resolve, __) {
   resolve({id: _next_id++});
 });
 
-
 // load/clear/store annotations
 d3.select('#clear-annotations').on('click', function() {
   annotator.annotations = [];
@@ -150,3 +160,6 @@ d3.select('#load-annotations').on('click', function() {
   const ann = JSON.parse(window.localStorage.getItem('dom-tree-annotator.annotations') || '[]');
   annotator.annotations = ann;
 });
+
+// bootstrap
+annotator.annotations = [];
