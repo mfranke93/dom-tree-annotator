@@ -80,22 +80,29 @@ export default class Annotator extends EventTarget {
     nodes.forEach(node => {
       node.addEventListener('mouseenter', () => {
         nodes.forEach(node2 => node2.classList.remove('annotation--hover-target'));
+        const ranges = new Set<TextRange>();
 
-        const range = this.ranges.find(r => r.elements.includes(node as HTMLElement));
-        if (range !== undefined) {
-          const ranges = new Set<TextRange>();
-          range.annotations.forEach(a => a.ranges.forEach(r => ranges.add(r)));
-          ranges.forEach(r => r.elements.forEach(d => d.classList.add('annotation--hover-target')));
+        const annotations = this.annotationsAt(node as HTMLElement);
+        annotations.forEach(a => a.ranges.forEach(r => ranges.add(r)));
+        ranges.forEach(r => r.elements.forEach(d => d.classList.add('annotation--hover-target')));
 
-          this.dispatchEvent(new CustomEvent('hoverstart', { detail: range.annotations }));
-        }
+        this.dispatchEvent(new CustomEvent('hoverstart', { detail: annotations }));
       });
       node.addEventListener('mouseleave', () => {
         nodes.forEach(node2 => node2.classList.remove('annotation--hover-target'));
 
         this.dispatchEvent(new CustomEvent('hoverend'));
       });
+      node.addEventListener('click', () => {
+        const annotations = this.annotationsAt(node as HTMLElement);
+
+        this.dispatchEvent(new CustomEvent('click', { detail: annotations }));
+      });
     });
+  }
+
+  private annotationsAt(elem: HTMLElement): Annotation[] {
+    return this.ranges.find(r => r.elements.includes(elem))?.annotations || [];
   }
 
   get ranges(): TextRange[] {
