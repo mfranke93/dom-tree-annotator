@@ -8,3 +8,10 @@
 .listing {
   padding: 1em;
 }
+
+header {
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+}
+

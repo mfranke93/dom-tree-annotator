@@ -10,4 +10,8 @@ export default class Annotation {
   ) {
 
   }
+
+  clone(): Annotation {
+    return new Annotation(this.start, this.end, this.data);
+  }
 };

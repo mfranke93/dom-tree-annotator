@@ -85,6 +85,11 @@ export default class Annotator extends EventTarget {
     return this._annotations;
   }
 
+  set annotations(annotations: Annotation[]) {
+    this._annotations = annotations;
+    this.recalculate();
+  }
+
   setAnnotationCreationHook(hook: AnnotationCreationHook): void {
     this._annotation_creation_hook = hook;
   }

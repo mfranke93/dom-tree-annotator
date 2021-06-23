@@ -134,3 +134,17 @@ let _next_id = 1;
 annotator.setAnnotationCreationHook(async function(_, resolve, __) {
   resolve({id: _next_id++});
 });
+
+
+// load/clear/store annotations
+d3.select('#clear-annotations').on('click', function() {
+  annotator.annotations = [];
+});
+d3.select('#store-annotations').on('click', function() {
+  const ann = annotator.annotations.map(a => a.clone());
+  window.localStorage.setItem('dom-tree-annotator.annotations', JSON.stringify(ann));
+});
+d3.select('#load-annotations').on('click', function() {
+  const ann = JSON.parse(window.localStorage.getItem('dom-tree-annotator.annotations') || '[]');
+  annotator.annotations = ann;
+});
