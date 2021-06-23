@@ -14,7 +14,12 @@ export default function insertRanges(
 
   // copy actual DOM nodes to a DocumentFragment, so that the references in the TextRanges are still correct
   const fragment = new DocumentFragment();
-  new_div.childNodes.forEach(node => fragment.appendChild(node));
+
+  // Store NodeList to array first, because it is a live NodeList and appending
+  // the nodes to the DocumentFragment will remove them from the document. That
+  // in turn messes up the loop, which will jump over each second element.
+  Array.from(new_div.childNodes).forEach(node => fragment.appendChild(node));
+
   return fragment;
 }
 
@@ -40,7 +45,6 @@ function handleNode(node: Node, text_position: number, range_list: TextRange[]):
         output_nodes.push(document.createTextNode(node.data.slice(last_range.end - text_position, range_list[0].start - text_position)));
       }
 
-      const clone = node.cloneNode();
       const range = range_list.shift() as TextRange;
       last_range = range;
 
@@ -50,7 +54,7 @@ function handleNode(node: Node, text_position: number, range_list: TextRange[]):
       const text_content = node.data.slice(range_start, range_end);
 
       // if the text only consists of newlines, it can be ignored as part of the annotation
-      if (text_content.match(/^\n+$/)) {
+      if (text_content.split('').every(d => d === '\n')) {
         // still need that content
         output_nodes.push(document.createTextNode(text_content));
       } else {
