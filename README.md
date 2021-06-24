@@ -227,3 +227,105 @@ The metadata is a shallow copy, so be careful if your metadata contains volatile
 | `readonly data: any` | Metadata |
 | `ranges: TextRange[]` | Associated `TextRange` objects. This is populated by the `Annotator` and should only be read from, not written to. |
 
+
+### TextRange
+
+A `TextRange` is an object describing a range of text, where at one point no two text ranges may overlap.
+An `Annotation` is distributed on one or more `TextRange` objects, and a `TextRange` object can contain one or more `Annotation` objects.
+Example with two annotations on a text:
+
+``` plain
+This is a longer string of text that is annotated.
+   |<-- Annotation 1 -->|
+              |<-- Annotation 2         -->|
+   | Range 1  | Range 2 | Range 3          |
+```
+
+Because the underlying DOM might contain child node boundaries within an annotation and within a text range, one `TextRange` is associated in turn with one or more DOM nodes.
+
+#### Methods
+
+``` typescript
+constructor(start: number, end: number, annotations: Annotation[])
+```
+
+Create a new `TextRange` object.
+The constructor takes start and end position, and the list of `Annotation` objects contained.
+There should be no reason to construct `TextRange` objects, this should happen only through the [`rangesFromAnnotations`](#rangesfromannotations) method.
+
+#### Public Members
+
+| Member | Description |
+|:-------|:------------|
+| `readonly start: number` | Start index |
+| `readonly end: number` | End index |
+| `readonly annotations: Annotation[]` | Annotations |
+| `elements: HTMLElement[]` | Associated DOM nodes that were created to represent this `TextRange`. This should only be read from, not written to. |
+
+
+### AnnotationCreationHook
+
+This is a TypeScript `type` describing a function: `function(context, resolve, reject): void`.
+The function is called by the `Annotator` after text has been selected, and the outcome of the function call determines whether an `Annotation` object will be created, and what metadata that would have.
+The function is passed the `this` reference of the calling `Annotator`.
+It is further passed an `AnnotationCreationObject` providing some context on the selected text range that will be turned, as well as a `resolve` and `reject` function.
+These functions work like with `Promise` constructors:
+The value passed to the `resolve` function will be the metadata of the created `Annotation`.
+If the `reject` function is called, no `Annotation` is created and the `Annotator` will log an error message with the argument of the `reject` function.
+
+
+### defaultAnnotationCreationHook
+
+The default `AnnotationCreationHook` that an `Annotator` will use if no other is set.
+This will prompt for a `comment` using `window.prompt`.
+If a comment is given, it will `resolve` with an object with that `comment` and an incrementing `id`.
+Otherwise, it will `reject`.
+
+
+### AnnotationCreationObject
+
+This is a data class containing information on a potential `Annotation` before that is created.
+This is passed as the first argument to an `AnnotationCreationHook`.
+
+
+#### Methods
+
+``` typescript
+constructor(start: number, end: number, content: string)
+```
+
+Create a new `AnnotationCreationObject` object.
+There should be no reason to construct these objects, this should happen only through the `Annotator`.
+
+#### Public Members
+
+| Member | Description |
+|:-------|:------------|
+| `readonly start: number` | Start index |
+| `readonly end: number` | End index |
+| `readonly content: string` | The (text-only, without DOM nodes) content of the selection; i.e., what would be contained in the `Annotation`. |
+
+
+### rangesFromAnnotations
+
+``` typescript
+function rangesFromAnnotations(annotations: Annotation[]): TextRange[];
+```
+
+This function generates a list of `TextRange` objects, which must not overlap, from a list of `Annotation` objects, which may well overlap.
+It should not be called directly for most use cases, but only by the `Annotator`.
+The `TextRange` objects resulting from this will have their parent `Annotation` objects referenced in the `annotations` member.
+
+
+### insertRanges
+
+``` typescript
+function insertRanges(innerHTML: string, ranges: TextRange[]): DocumentFragment;
+```
+
+This function inserts `<span>` objects associated with the `TextRange` objects passed into a HTML DOM tree.
+It is passed HTML as string; i.e., not as manipulateable DOM nodes.
+However, it returns a `DocumentFragment`, which can in turn be *moved* into a live DOM using `appendChild`.
+This way, the created DOM nodes are *preserved,* which is important because the DOM nodes (`<span>` elements) associated with each `TextRange` object are stored in that object's `elements` member.
+Typical use should not require calling this method directly.
+This is handled by the `Annotator`.
