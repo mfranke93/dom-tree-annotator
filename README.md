@@ -8,8 +8,8 @@
  1. [Styling](#styling)
  1. [API Reference](#api-reference)
 
-    a. [Annotator](#annotator)
-    a. [Annotation](#annotation)
+    1. [Annotator](#annotator)
+    1. [Annotation](#annotation)
 
 ## About
 
