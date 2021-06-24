@@ -149,8 +149,10 @@ This is the managing class for the creation and interaction with annotations.
 In most cases, this is the only interfacing datatype you need to explicitely name.
 
 
-<span id="api-Annotator-constructor" style="font-size: larger;"><code class="language-typescript">constructor(node: HTMLElement, creationHook?: AnnotationCreationHook)</code></span></br>
+#### Constructor
 
-Constructor.
+``` typescript
+constructor(node: HTMLElement, creationHook?: AnnotationCreationHook)
+```
 The first argument is mandatory and contains the HTML element of which the `Annotator` should control the contents; i.e., the element within which annotating should be possible.
 You *may* pass the `AnnotationCreationHook` here directly, but may also do so using the [`setAnnotationCreationHook`](#api-Annotator-setAnnotationCreationHook) method later.
