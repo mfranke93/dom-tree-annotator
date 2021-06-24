@@ -1,5 +1,15 @@
 # DOM Tree Annotator
 
+## Table of Contents
+
+ 1. [About](#about)
+ 1. [Building](#building)
+ 1. [Basic Usage](#basic-usage)
+ 1. [Styling](#styling)
+ 1. [API Reference](#api-reference)
+
+## About
+
 This is a JavaScript/TypeScript library for adding annotations to HTML text.
 The library automatically handles overlapping annotations, as well as annotations that cross node boundaries already present in the HTML DOM.
 For example, consider what happens when we add an annotation (as a `<span>` tag) to the following markup:
@@ -51,14 +61,7 @@ The library keeps track of which DOM nodes each annotation is associated with.
 If annotations overlap, the `<span>` elements in the overlap will be associated with both (or all of them).
 
 
-## Table of Contents
-
- 1. [Building](#building)
- 1. [Basic Usage](#usage)
- 1. [Styling](#styling)
- 1. [API Reference](#api)
-
-## Building {#building}
+## Building
 
 This repository is configured as an *npm* package, which means it can be added as a dependency using the syntax for [private GitHub repositories](https://docs.npmjs.com/cli/v7/configuring-npm/package-json#git-urls-as-dependencies):
 
@@ -91,7 +94,7 @@ The built assets are then located in `lib/`:
  - `index.d.ts`: TypeScript typings
 
 
-## Basic Usage {#usage}
+## Basic Usage
 
 To set up the annotator, create an [Annotator](#api-Annotator) class and pass its constructor a `HTMLElement`.
 That element is the DOM node within which annotations will be possible.
@@ -106,7 +109,8 @@ const annotator = new Annotator(document.querySelector('div#annotation-target'))
 annotator.on('change', e => console.log('Annotations:', e.detail));
 annotator.setAnnotationCreationHook(async function(context, resolve, reject) {
   // check if annotation correct
-  if (window.confirm(`Create an annotation around "${context.content}"?`)) resolve({id: next_annotation_id++});
+  const confirmation = window.confirm(`Create an annotation around "${context.content}"?`);
+  if (confirm) resolve({id: next_annotation_id++});
   else reject('User did not want to create annotation.');
 });
 ```
@@ -114,10 +118,10 @@ annotator.setAnnotationCreationHook(async function(context, resolve, reject) {
 A basic example with a visualization of where the annotation spans are created is located in [`demo/`](./demo).
 This also demonstrates how to subscribe to annotator events and how to set up the `Annotator` class.
 
-## Styling {#styling}
+## Styling
 
 b
 
-## API Reference {#api}
+## API Reference
 
 c
