@@ -151,7 +151,7 @@ This is the managing class for the creation and interaction with annotations.
 In most cases, this is the only interfacing datatype you need to explicitely name.
 
 
- -  
+---
 ``` typescript
   constructor(node: HTMLElement, creationHook?: AnnotationCreationHook)
 ```
