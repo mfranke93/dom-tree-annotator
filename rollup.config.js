@@ -18,7 +18,7 @@ export default [
         plugins: [ terser(), ],
       },
       {
-        name: "DomAnnotator",
+        name: "DomTreeAnnotator",
         file: pkg.browser,
         format: 'iife',
         sourcemap: true,
