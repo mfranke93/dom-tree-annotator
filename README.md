@@ -100,7 +100,7 @@ The built assets are then located in `lib/`:
 
 To set up the annotator, create an [Annotator](#api-Annotator) class and pass its constructor a `HTMLElement`.
 That element is the DOM node within which annotations will be possible.
-By default, created annotations will contain a unique ID and their textual content as extra data, but you can set a different `AnnotationCreationHook` on the `Annotator` (see [API reference](#api-Annotator-setAnnotationCreationHook)).
+By default, created annotations will contain a unique ID and their textual content as extra data, but you can set a different `AnnotationCreationHook` on the `Annotator` (see [API reference](#annotator)).
 
 ``` js
 const { Annotator } = DomTreeAnnotator;  // library added via <script> tag
@@ -145,16 +145,66 @@ Minimal stylesheet example for now (or use the generated one):
 
 ## API Reference
 
+---
+
 ### Annotator
 
 This is the managing class for the creation and interaction with annotations.
 In most cases, this is the only interfacing datatype you need to explicitely name.
 
+#### Methods
 
 ---
 ``` typescript
-  constructor(node: HTMLElement, creationHook?: AnnotationCreationHook)
+constructor(node: HTMLElement, creationHook?: AnnotationCreationHook)
 ```
 
-  The first argument is mandatory and contains the HTML element of which the `Annotator` should control the contents; i.e., the element within which annotating should be possible.
-  You *may* pass the `AnnotationCreationHook` here directly, but may also do so using the [`setAnnotationCreationHook`](#api-Annotator-setAnnotationCreationHook) method later.
+The first argument is mandatory and contains the HTML element of which the `Annotator` should control the contents; i.e., the element within which annotating should be possible.
+You *may* pass the `AnnotationCreationHook` here directly, but may also do so using the `setAnnotationCreationHook` method later.
+If not set, the `defaultAnnotationCreationHook` is used instead.
+
+
+---
+
+``` typescript
+setAnnotationCreationHook(hook: AnnotationCreationHook): void
+```
+
+Set a hook that is called when creating annotation.
+The method takes an [`AnnotationCreationObject`](#annotationcreationobject) with context data, a `resolve` function, and a `reject` function, and offers the possibility to add metadata to new annotations via the `resolve` function or to abort the creation with `reject`.
+See [`AnnotationCreationHook`](#annotationcreationhook) for more details.
+
+
+#### Public Members
+
+---
+``` typescript
+ranges: TextRange[]
+```
+
+The array of `TextRange` objects currently present.
+This is **read-only** (only a `get` property in TypeScript).
+
+---
+``` typescript
+annotations: Annotation[]
+```
+
+The array of annotations.
+This is readable and writable (`get` and `set` defined in TypeScript).
+When assigning a value, the `TextRange`s are recalculated, the node is layed out, and the creation events are fired again.
+
+
+#### Events
+
+`Annotator` inherits from `EventTarget` and fires events when certain actions happen.
+Consequently, `Annotator` also has the `addEventListener` and `removeEventListener` methods.
+All events are `CustomEvent` instances, and in all cases, the `annotations` member is passed as the `detail` attribute of the event.
+
+ - `change`: This event is fired after the DOM has been rearranged and all annotation fragment `<span>` elements have been created anew; i.e., it is fired after the annotations have changed.
+ - `click`: This event is fired after a click on any annotation span.
+ - `hoverstart`: This event is fired when the mouse enters any annotation span.
+ - `hoverend`: This event is fired when the mouse exits any annotation span.
+
+   **Note:** This event is also fired when the mouse leaves one span while at the same time entering a neighboring span!
+
