@@ -9,6 +9,7 @@
  1. [API Reference](#api-reference)
 
     a. [Annotator](#annotator)
+    a. [Annotation](#annotation)
 
 ## About
 
