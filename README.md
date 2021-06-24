@@ -154,7 +154,6 @@ In most cases, this is the only interfacing datatype you need to explicitely nam
 
 #### Methods
 
----
 ``` typescript
 constructor(node: HTMLElement, creationHook?: AnnotationCreationHook)
 ```
@@ -177,7 +176,6 @@ See [`AnnotationCreationHook`](#annotationcreationhook) for more details.
 
 #### Public Members
 
----
 ``` typescript
 ranges: TextRange[]
 ```
@@ -186,6 +184,7 @@ The array of `TextRange` objects currently present.
 This is **read-only** (only a `get` property in TypeScript).
 
 ---
+
 ``` typescript
 annotations: Annotation[]
 ```
