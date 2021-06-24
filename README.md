@@ -143,4 +143,13 @@ Minimal stylesheet example for now (or use the generated one):
 
 ## API Reference
 
-c
+<h3 id="api-Annotator">Annotator</h3>
+
+This is the managing class for the creation and interaction with annotations.
+In most cases, this is the only interfacing datatype you need to explicitely name.
+
+<h4 id="api-Annotator-constructor">constructor(node: HTMLElement, creationHook?: AnnotationCreationHook)</h4>
+
+Constructor.
+The first argument is mandatory and contains the HTML element of which the `Annotator` should control the contents; i.e., the element within which annotating should be possible.
+You *may* pass the `AnnotationCreationHook` here directly, but may also do so using the [`setAnnotationCreationHook`](#api-Annotator-setAnnotationCreationHook) method later.
