@@ -1,6 +1,6 @@
 import { Annotator } from '../lib/index.js';
 // or: <script> tag with lib/dom-tree-annotator.min.js and
-// const { Annotator } = DomAnnotator;
+// const { Annotator } = DomTreeAnnotator;
 
 const text_content = `<p id="first">
   Consectetur enim laborum velit porro earum quae vitae?
@@ -19,7 +19,12 @@ const p = log_content.append('p').classed('annotated-text', true).html(text_cont
 
 
 function onAnnotationChange(evt) {
-  const { annotations, ranges } = evt.detail;
+  const annotations = evt.detail;
+  const ranges = (() => {
+    const rs = new Set();
+    annotations.forEach(a => a.ranges.forEach(r => rs.add(r)));
+    return Array.from(rs);
+  })();
 
   // text
   let text = '';

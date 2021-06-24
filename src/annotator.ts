@@ -68,7 +68,7 @@ export default class Annotator extends EventTarget {
 
     this._ranges = ranges;
 
-    const evt = new CustomEvent('change', { detail: { ranges, annotations: this._annotations }});
+    const evt = new CustomEvent('change', { detail: this._annotations });
     this.dispatchEvent(evt);
 
     const ranges_flat_copy = ranges.map(d => d);  // flat copy because insertRanges consumes array

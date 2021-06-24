@@ -1,5 +1,4 @@
 import TextRange from './text-range';
-import Annotation from './annotation';
 
 export default function insertRanges(
   innerHTML: string,
