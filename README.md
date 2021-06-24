@@ -10,6 +10,12 @@
 
     1. [Annotator](#annotator)
     1. [Annotation](#annotation)
+    1. [TextRange](#textrange)
+    1. [AnnotationCreationHook](#annotationcreationhook)
+    1. [defaultAnnotationCreationHook](#defaultannotationcreationhook)
+    1. [AnnotationCreationObject](#annotationcreationobject)
+    1. [rangesFromAnnotations](#rangesfromannotations)
+    1. [insertRanges](#insertranges)
 
 ## About
 
