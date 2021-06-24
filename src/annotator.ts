@@ -5,6 +5,7 @@ import insertRanges from './insert-ranges';
 import AnnotationCreationObject from './annotation-creation-object';
 import AnnotationCreationHook from './annotation-creation-hook';
 import defaultAnnotationCreationHook from './default-annotation-creation-hook';
+import AnnotationMetadata from './annotation-metadata';
 
 export default class Annotator extends EventTarget {
   private readonly _innerHTML: string;
@@ -50,8 +51,8 @@ export default class Annotator extends EventTarget {
 
     const annotationCreationObject = new AnnotationCreationObject(start, end, selection_content);
     try {
-      const annotation_data = await new Promise((resolve, reject) => this._annotation_creation_hook.call(this, annotationCreationObject, resolve, reject));
-      this._annotations.push(new Annotation(start, end, annotation_data));
+      const { data, classList = [] } = await new Promise<AnnotationMetadata>((resolve, reject) => this._annotation_creation_hook.call(this, annotationCreationObject, resolve, reject));
+      this._annotations.push(new Annotation(start, end, data, classList));
       this.recalculate();
     } catch (err) {
       console.error(err);

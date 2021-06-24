@@ -15,3 +15,18 @@ header {
   gap: 1em;
 }
 
+.annotation.annotation--blue {
+  --annotation-bg-color: lightblue;
+}
+
+.annotation.annotation--red {
+  --annotation-bg-color: #e8b8b8;
+}
+
+.annotation.annotation--green {
+  --annotation-bg-color: lightgreen;
+}
+
+.annotation.annotation--underlined {
+  text-decoration: underline;
+}

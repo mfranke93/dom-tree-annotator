@@ -14,6 +14,7 @@
     1. [AnnotationCreationHook](#annotationcreationhook)
     1. [defaultAnnotationCreationHook](#defaultannotationcreationhook)
     1. [AnnotationCreationObject](#annotationcreationobject)
+    1. [AnnotationMetadata](#annotationmetadata)
     1. [rangesFromAnnotations](#rangesfromannotations)
     1. [insertRanges](#insertranges)
 
@@ -231,6 +232,7 @@ The metadata is a shallow copy, so be careful if your metadata contains volatile
 | `readonly start: number` | Start index |
 | `readonly end: number` | End index |
 | `readonly data: any` | Metadata |
+| `readonly classList: string[]` | Classes for single-use DOM nodes in this annotation |
 | `ranges: TextRange[]` | Associated `TextRange` objects. This is populated by the `Annotator` and should only be read from, not written to. |
 
 
@@ -276,7 +278,7 @@ The function is called by the `Annotator` after text has been selected, and the 
 The function is passed the `this` reference of the calling `Annotator`.
 It is further passed an `AnnotationCreationObject` providing some context on the selected text range that will be turned, as well as a `resolve` and `reject` function.
 These functions work like with `Promise` constructors:
-The value passed to the `resolve` function will be the metadata of the created `Annotation`.
+The `AnnotationMetadata` object passed to the `resolve` function will affect the metadata of the created `Annotation`.
 If the `reject` function is called, no `Annotation` is created and the `Annotator` will log an error message with the argument of the `reject` function.
 
 
@@ -310,6 +312,26 @@ There should be no reason to construct these objects, this should happen only th
 | `readonly start: number` | Start index |
 | `readonly end: number` | End index |
 | `readonly content: string` | The (text-only, without DOM nodes) content of the selection; i.e., what would be contained in the `Annotation`. |
+
+
+### AnnotationMetadata
+
+This is a TypeScript `interface` describing the metadata object passed to the `resolve` function of an `AnnotationCreationHook`.
+It contains the following members:
+
+``` typescript
+data: any
+```
+This data is attributed directly to the `data` member of the created `Annotation` member.
+
+---
+
+``` typescript
+classList?: string[]
+```
+This optional member is a list of class names that each DOM element created from each `TextRange` containing *only* that `Annotation` will be assigned to.
+`TextRange` objects resulting from two or more overlapping `Annotation` objects will not be affected.
+This is a good way to color or style text passages that contain only one `Annotation`.
 
 
 ### rangesFromAnnotations

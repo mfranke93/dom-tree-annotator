@@ -25,6 +25,7 @@ function onAnnotationChange(evt) {
     annotations.forEach(a => a.ranges.forEach(r => rs.add(r)));
     return Array.from(rs);
   })();
+  console.log(annotations);
 
   // text
   let text = '';
@@ -151,7 +152,16 @@ annotator.addEventListener('click', evt => console.log('click', evt.detail));
 // give each annotation a number
 let _next_id = 1;
 annotator.setAnnotationCreationHook(async function(_, resolve, __) {
-  resolve({id: _next_id++});
+  const data = {id: _next_id++};
+  const classList = [];
+
+  const color = Math.random();
+  if (color < 0.2) classList.push('annotation--red');
+  else if (color < 0.7) classList.push('annotation--green');
+  else classList.push('annotation--blue');
+
+  if (Math.random() > 0.8) classList.push('annotation--underlined');
+  resolve({data, classList});
 });
 
 // load/clear/store annotations

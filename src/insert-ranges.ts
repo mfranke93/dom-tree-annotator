@@ -60,7 +60,10 @@ function handleNode(node: Node, text_position: number, range_list: TextRange[]):
         // create actual span
         const span = document.createElement('span');
         span.classList.add('annotation');
+
         if (range.annotations.length > 1) span.classList.add('annotation--overlap');
+        else span.classList.add(...range.annotations[0].classList);
+
         span.setAttribute('data-annotation-ids', range.annotations.map(d => d.data['id']).join(','));
 
         // use innerHTML to avoid creation of additional <br /> elements
