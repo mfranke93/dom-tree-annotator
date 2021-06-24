@@ -118,9 +118,28 @@ annotator.setAnnotationCreationHook(async function(context, resolve, reject) {
 A basic example with a visualization of where the annotation spans are created is located in [`demo/`](./demo).
 This also demonstrates how to subscribe to annotator events and how to set up the `Annotator` class.
 
+
 ## Styling
 
-b
+The `<span>` elements all get a class `.annotation` that handles the basic styling.
+At the moment, that is a background color, which can be controlled by the CSS custom property `--annotation-bg-color`.
+`<span>` elements in the overlap of two or more annotations additionally get the `.annotation--overlap` class, and are styled in grey by default.
+When hovering over a `<span>`, all `<span>` elements that share an annotation with that `<span>` also get the `.annotation--hover-target` class, which by default adds a blue outline.
+
+In the future, I will add functionality to manipulate the `classList` of associated `<span>` elements when creating annotations using a hook.
+Minimal stylesheet example for now (or use the generated one):
+
+``` css
+.annotation {
+  background: lightblue;
+}
+.annotation.annotation--overlap {
+  background: lightgray;
+}
+.annotation.annotation--hover-target {
+  outline: 1px solid darkblue;
+}
+```
 
 ## API Reference
 
