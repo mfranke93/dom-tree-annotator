@@ -177,22 +177,10 @@ See [`AnnotationCreationHook`](#annotationcreationhook) for more details.
 
 #### Public Members
 
-``` typescript
-ranges: TextRange[]
-```
-
-The array of `TextRange` objects currently present.
-This is **read-only** (only a `get` property in TypeScript).
-
----
-
-``` typescript
-annotations: Annotation[]
-```
-
-The array of annotations.
-This is readable and writable (`get` and `set` defined in TypeScript).
-When assigning a value, the `TextRange`s are recalculated, the node is layed out, and the creation events are fired again.
+| Member | Description |
+|:-------|:------------|
+| `ranges: TextRange[]` | The array of `TextRange` objects currently present. This is **read-only** (only a `get` property in TypeScript). |
+| `annotations: Annotation[]` | The array of annotations. This is readable and writable (`get` and `set` defined in TypeScript). When assigning a value, the `TextRange`s are recalculated, the node is layed out, and the creation events are fired again. |
 
 
 #### Events
@@ -201,13 +189,12 @@ When assigning a value, the `TextRange`s are recalculated, the node is layed out
 Consequently, `Annotator` also has the `addEventListener` and `removeEventListener` methods.
 All events are `CustomEvent` instances, and in all cases, the `annotations` member is passed as the `detail` attribute of the event.
 
- - `change`: This event is fired after the DOM has been rearranged and all annotation fragment `<span>` elements have been created anew; i.e., it is fired after the annotations have changed.
- - `click`: This event is fired after a click on any annotation span.
- - `hoverstart`: This event is fired when the mouse enters any annotation span.
- - `hoverend`: This event is fired when the mouse exits any annotation span.
-
-   **Note:** This event is also fired when the mouse leaves one span while at the same time entering a neighboring span!
-
+| Event name | Description |
+|:--|:--|
+| `change` | This event is fired after the DOM has been rearranged and all annotation fragment `<span>` elements have been created anew; i.e., it is fired after the annotations have changed. |
+| `click` | This event is fired after a click on any annotation span. |
+| `hoverstart` | This event is fired when the mouse enters any annotation span. |
+| `hoverend` | This event is fired when the mouse exits any annotation span. **Note:** This event is also fired when the mouse leaves one span while at the same time entering a neighboring span! |
 
 
 ### Annotation
