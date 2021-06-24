@@ -207,3 +207,56 @@ All events are `CustomEvent` instances, and in all cases, the `annotations` memb
 
    **Note:** This event is also fired when the mouse leaves one span while at the same time entering a neighboring span!
 
+
+
+### Annotation
+
+An annotation is an object with data about the start and end of the annotated text, additional metadata, and the associated `TextRange` objects.
+
+#### Methods
+
+``` typescript
+constructor(start: number, end: number, data: any = {})
+```
+
+Create a new `Annotation` object.
+The constructor takes start and end position, and optional metadata.
+
+---
+
+``` typescript
+clone(): Annotation
+```
+Returns a new `Annotation` with the same start, end, and metadata.
+The metadata is a shallow copy, so be careful if your metadata contains volatile references.
+
+
+#### Public Members
+
+``` typescript
+readonly start: number
+```
+Start index.
+
+---
+
+``` typescript
+readonly end: number
+```
+End index (exclusive).
+
+---
+
+``` typescript
+readonly data: any
+```
+Metadata.
+
+---
+
+``` typescript
+ranges: TextRange[]
+```
+Associated `TextRange` objects.
+This is populated by the `Annotator` and should only be read from, not written to.
+
