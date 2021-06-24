@@ -224,7 +224,6 @@ Create a new `Annotation` object.
 The constructor takes start and end position, and optional metadata.
 
 ---
-
 ``` typescript
 clone(): Annotation
 ```
@@ -234,30 +233,10 @@ The metadata is a shallow copy, so be careful if your metadata contains volatile
 
 #### Public Members
 
-``` typescript
-readonly start: number
-```
-Start index.
-
----
-
-``` typescript
-readonly end: number
-```
-End index (exclusive).
-
----
-
-``` typescript
-readonly data: any
-```
-Metadata.
-
----
-
-``` typescript
-ranges: TextRange[]
-```
-Associated `TextRange` objects.
-This is populated by the `Annotator` and should only be read from, not written to.
+| Member | Description |
+|:-------|:------------|
+| `readonly start: number` | Start index |
+| `readonly end: number` | End index |
+| `readonly data: any` | Metadata |
+| `ranges: TextRange[]` | Associated `TextRange` objects. This is populated by the `Annotator` and should only be read from, not written to. |
 
