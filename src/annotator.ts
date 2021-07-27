@@ -69,9 +69,6 @@ export default class Annotator extends EventTarget {
 
     this._ranges = ranges;
 
-    const evt = new CustomEvent('change', { detail: this._annotations });
-    this.dispatchEvent(evt);
-
     const ranges_flat_copy = ranges.map(d => d);  // flat copy because insertRanges consumes array
     const fragment = insertRanges(this._innerHTML, ranges_flat_copy);
     this._target_node.innerHTML = '';  // clear content
@@ -100,6 +97,9 @@ export default class Annotator extends EventTarget {
         this.dispatchEvent(new CustomEvent('click', { detail: annotations }));
       });
     });
+
+    const evt = new CustomEvent('change', { detail: this._annotations });
+    this.dispatchEvent(evt);
   }
 
   private annotationsAt(elem: HTMLElement): Annotation[] {
