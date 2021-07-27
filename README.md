@@ -184,6 +184,14 @@ See [`AnnotationCreationHook`](#annotationcreationhook) for more details.
 ---
 
 ``` typescript
+getAnnotationCreationHook(): AnnotationCreationHook
+```
+
+Get the currently set `AnnotationCreationHook`.
+
+---
+
+``` typescript
 updateAnnotationSpan(annotation: Annotation, start: number, end: number): void
 ```
 
