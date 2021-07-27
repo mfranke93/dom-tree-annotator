@@ -1,6 +1,6 @@
 {
   "name": "dom-tree-annotator",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Insert annotation spans into a DOM tree.",
   "main": "lib/index.js",
   "module": "lib/index.js",

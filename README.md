@@ -181,6 +181,14 @@ Set a hook that is called when creating annotation.
 The method takes an [`AnnotationCreationObject`](#annotationcreationobject) with context data, a `resolve` function, and a `reject` function, and offers the possibility to add metadata to new annotations via the `resolve` function or to abort the creation with `reject`.
 See [`AnnotationCreationHook`](#annotationcreationhook) for more details.
 
+---
+
+``` typescript
+updateAnnotationSpan(annotation: Annotation, start: number, end: number): void
+```
+
+Change the text positions of an annotation's extent.
+The annotation needs to be part of the `annotation`s of the `Annotator`.
 
 #### Public Members
 

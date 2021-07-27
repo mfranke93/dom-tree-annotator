@@ -119,6 +119,13 @@ export default class Annotator extends EventTarget {
     this.recalculate();
   }
 
+  updateAnnotationSpan(ann: Annotation, start: number, end: number) {
+    const newAnnotation = new Annotation(start, end, ann.data, ann.classList);
+    const index = this._annotations.indexOf(ann);
+    if (index >= 0) this._annotations.splice(index, 1, newAnnotation);
+    this.recalculate();
+  }
+
   setAnnotationCreationHook(hook: AnnotationCreationHook): void {
     this._annotation_creation_hook = hook;
   }
