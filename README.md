@@ -192,11 +192,12 @@ Get the currently set `AnnotationCreationHook`.
 ---
 
 ``` typescript
-updateAnnotationSpan(annotation: Annotation, start: number, end: number): void
+updateAnnotationSpan(annotation: Annotation, start: number, end: number): Annotation
 ```
 
 Change the text positions of an annotation's extent.
 The annotation needs to be part of the `annotation`s of the `Annotator`.
+Returns the updated `Annotation`, as the object itself is replaced.
 
 #### Public Members
 

@@ -124,6 +124,8 @@ export default class Annotator extends EventTarget {
     const index = this._annotations.indexOf(ann);
     if (index >= 0) this._annotations.splice(index, 1, newAnnotation);
     this.recalculate();
+
+    return newAnnotation;
   }
 
   setAnnotationCreationHook(hook: AnnotationCreationHook): void {
