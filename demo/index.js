@@ -2,6 +2,8 @@ import { Annotator } from '../lib/index.js';
 // or: <script> tag with lib/dom-tree-annotator.min.js and
 // const { Annotator } = DomTreeAnnotator;
 
+import { TreeVis } from './tree-vis.js';
+
 const text_content = `<p id="first">
   Consectetur enim laborum velit porro earum quae vitae?
   <b>Illum</b> sit autem eos eos labore reprehenderit.
@@ -17,6 +19,9 @@ const listing = log_content.append('ol');
 log_content.append('h3').text('As spans');
 const p = log_content.append('p').classed('annotated-text', true).html(text_content);
 
+log_content.append('h3').text('Tree visualization');
+const tree = log_content.append('div').classed('tree-vis', true);
+const treeVis = new TreeVis(tree);
 
 function onAnnotationChange(evt) {
   const annotations = evt.detail;
@@ -141,6 +146,8 @@ function onAnnotationChange(evt) {
   p.selectAll('span.annotation').on('click', function () {
     console.log(this.getAttribute('data-annotation-ids'));
   });
+
+  requestAnimationFrame(() => treeVis.render(text_content, p.node()));
 }
 
 const annotator = new Annotator(p.node());

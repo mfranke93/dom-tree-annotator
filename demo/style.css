@@ -30,3 +30,7 @@ header {
 .annotation.annotation--underlined {
   text-decoration: underline;
 }
+
+.tree-vis {
+  cursor: default;
+}
