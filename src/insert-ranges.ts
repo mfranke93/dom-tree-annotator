@@ -64,6 +64,13 @@ function handleNode(node: Node, text_position: number, range_list: TextRange[]):
         if (range.annotations.length > 1) span.classList.add('annotation--overlap');
         else span.classList.add(...range.annotations[0].classList);
 
+        // if one or more annotations has DOMINANT classes, add them regardless of overlap
+        range.annotations.forEach(ann => {
+          if (ann.dominantClasses) {
+            span.classList.add(...ann.classList);
+          }
+        });
+
         span.setAttribute('data-annotation-ids', range.annotations.map(d => d.data['id']).join(','));
 
         // use innerHTML to avoid creation of additional <br /> elements

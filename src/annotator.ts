@@ -51,8 +51,8 @@ export default class Annotator extends EventTarget {
 
     const annotationCreationObject = new AnnotationCreationObject(start, end, selection_content);
     try {
-      const { data, classList = [] } = await new Promise<AnnotationMetadata>((resolve, reject) => this._annotation_creation_hook.call(this, annotationCreationObject, resolve, reject));
-      this._annotations.push(new Annotation(start, end, data, classList));
+      const { data, classList = [], dominantClasses = false } = await new Promise<AnnotationMetadata>((resolve, reject) => this._annotation_creation_hook.call(this, annotationCreationObject, resolve, reject));
+      this._annotations.push(new Annotation(start, end, data, classList, dominantClasses));
       this.recalculate();
     } catch (err) {
       console.error(err);

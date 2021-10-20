@@ -162,13 +162,17 @@ annotator.setAnnotationCreationHook(async function(_, resolve, __) {
   const data = {id: _next_id++};
   const classList = [];
 
+  let dominantClasses = false;
   const color = Math.random();
   if (color < 0.2) classList.push('annotation--red');
   else if (color < 0.7) classList.push('annotation--green');
   else classList.push('annotation--blue');
 
-  if (Math.random() > 0.8) classList.push('annotation--underlined');
-  resolve({data, classList});
+  if (Math.random() > 0.8) {
+    classList.push('annotation--underlined');
+    dominantClasses = true;
+  }
+  resolve({data, classList, dominantClasses});
 });
 
 // load/clear/store annotations

@@ -8,11 +8,12 @@ export default class Annotation {
     readonly end: number,
     readonly data: any = {},
     readonly classList: string[] = [],
+    readonly dominantClasses: boolean = false,
   ) {
 
   }
 
   clone(): Annotation {
-    return new Annotation(this.start, this.end, this.data, this.classList);
+    return new Annotation(this.start, this.end, this.data, this.classList, this.dominantClasses);
   }
 };
