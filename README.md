@@ -78,7 +78,7 @@ This repository is configured as an *npm* package, which means it can be added a
 ``` json
   ...
   "dependencies": {
-    "dom-tree-annotator": "git+ssh://git@github.tik.uni-stuttgart.de:frankemx/dom-tree-annotator#v0.0.3"
+    "dom-tree-annotator": "git+ssh://git@github.com:mfranke93/dom-tree-annotator#v0.0.3"
   },
   ...
 ```
