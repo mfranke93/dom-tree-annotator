@@ -46,8 +46,9 @@ export default class Annotator extends EventTarget {
     r2.detach();
 
     // create annotation, ask for extra data
-    const start = pre_contents.length;
-    const end = start + selection_content.length;
+    // use Array.from to account for two-byte UTF-16 surrogate pairs
+    const start = Array.from(pre_contents).length;
+    const end = start + Array.from(selection_content).length;
 
     const annotationCreationObject = new AnnotationCreationObject(start, end, selection_content);
     try {

@@ -27,21 +27,22 @@ function handleNode(node: Node, text_position: number, range_list: TextRange[]):
 
   // node is text_node (recursion abort)
   if (node instanceof Text) {
-    const length = node.length;
+    const nodeData = Array.from(node.textContent ?? []);
+    const length = nodeData.length;
 
     if (range_list.length === 0) {
       // entire text node has no ranges
       output_nodes.push(node.cloneNode());
     } else if (range_list[0].start > text_position) {
       // text node at start
-      output_nodes.push(document.createTextNode(node.data.slice(0, range_list[0].start - text_position)));
+      output_nodes.push(document.createTextNode(nodeData.slice(0, range_list[0].start - text_position).join('')));
     }
 
     let last_range: TextRange | null = null;
     while (range_list.length > 0 && range_list[0].start < text_position + length) {
       // insert text node between ranges if non-empty
       if (last_range !== null && last_range.end < range_list[0].start) {
-        output_nodes.push(document.createTextNode(node.data.slice(last_range.end - text_position, range_list[0].start - text_position)));
+        output_nodes.push(document.createTextNode(nodeData.slice(last_range.end - text_position, range_list[0].start - text_position).join('')));
       }
 
       const range = range_list.shift() as TextRange;
@@ -50,12 +51,12 @@ function handleNode(node: Node, text_position: number, range_list: TextRange[]):
       const range_start = Math.max(range.start, text_position) - text_position; // range starts either at start of node, or later
       const range_end = Math.min(range.end, text_position + length) - text_position;  // range ends either at end of node, or earlier
 
-      const text_content = node.data.slice(range_start, range_end);
+      const text_content = nodeData.slice(range_start, range_end);
 
       // if the text only consists of newlines, it can be ignored as part of the annotation
-      if (text_content.split('').every(d => d === '\n')) {
+      if (text_content.every(d => d === '\n')) {
         // still need that content
-        output_nodes.push(document.createTextNode(text_content));
+        output_nodes.push(document.createTextNode(text_content.join('')));
       } else {
         // create actual span
         const span = document.createElement('span');
@@ -74,7 +75,7 @@ function handleNode(node: Node, text_position: number, range_list: TextRange[]):
         span.setAttribute('data-annotation-ids', range.annotations.map(d => d.data['id']).join(','));
 
         // use innerHTML to avoid creation of additional <br /> elements
-        span.innerHTML = text_content;
+        span.innerHTML = text_content.join('');
         output_nodes.push(span);
 
         // set element
@@ -90,7 +91,7 @@ function handleNode(node: Node, text_position: number, range_list: TextRange[]):
 
     if (last_range !== null && last_range.end < text_position + length) {
       // text node at end
-      output_nodes.push(document.createTextNode(node.data.slice(last_range.end - text_position)));
+      output_nodes.push(document.createTextNode(nodeData.slice(last_range.end - text_position).join('')));
     }
 
     return [length, output_nodes];

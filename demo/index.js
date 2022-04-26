@@ -10,6 +10,8 @@ const text_content = `<p id="first">
   Sed quo labore soluta eius.
 </p>
 
+<p>o􀂰scene</p>
+
 <p style="color: red;">
   Foo bar baz; bak foo. Sed quo labore soluta eius.
 </p>`;
@@ -45,7 +47,7 @@ function onAnnotationChange(evt) {
   traverse(d);
 
   const x = d3.scaleLinear()
-    .domain([0, text.length])
+    .domain([0, Array.from(text).length])
     .range([20, 1180]);
   const y = d3.scaleBand()
     .domain([...annotations.map(d => d.data.id), 'dummy'])
@@ -122,7 +124,7 @@ function onAnnotationChange(evt) {
 
   d3.select('svg')
     .selectAll('.dummy')
-    .data(text.split(''))
+    .data(Array.from(text))
     .enter()
     .append('text')
     .attr('x', (d, i) => x(i) + (x(1) - x(0)) / 2)
